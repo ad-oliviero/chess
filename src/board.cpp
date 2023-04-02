@@ -7,7 +7,7 @@ Board::Board(float squaresz) {
 			board[i][j] = 0;
 			square[i][j].setSize(sf::Vector2f(squaresz, squaresz));
 			square[i][j].setPosition(sf::Vector2f(i * squaresz, j * squaresz));
-			square[i][j].setFillColor(((i + j) % 2 == 0) ? sf::Color::White : sf::Color::Black);
+			square[i][j].setFillColor(((i + j) % 2 == 0) ? sf::Color(200, 200, 200, 255) : sf::Color(50, 50, 50, 255));
 		}
 	}
 }

@@ -13,7 +13,7 @@ Piece::Piece(uint id, uint type, uint team) {
 	if (!texture.loadFromFile("res/pawn.png"))
 		throw std::runtime_error("Failed to load res/pawn.png");
 	sprite.setTexture(texture);
-	sprite.setColor(sf::Color::Red);
+	sprite.setColor(sf::Color::White);
 	sprite.setScale(0.2, 0.2);
 	sprite.setPosition(sf::Vector2f(0, 0));
 
@@ -58,7 +58,7 @@ void Piece::setPosition(float x, float y) {
 
 void Piece::setTeam(bool newTeam) {
 	team = newTeam;
-	sprite.setColor(team == Piece::White ? sf::Color::Green : sf::Color::Red);
+	sprite.setColor(team == Piece::White ? sf::Color::White : sf::Color(95, 95, 95, 255));
 }
 
 void Piece::setType(uint newType) {
