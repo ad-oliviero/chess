@@ -2,6 +2,7 @@
 #include "board.hpp"
 #include "piece.hpp"
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 Game::Game() {
 	window.create(sf::VideoMode(800, 800), "chess");
@@ -13,13 +14,30 @@ Game::~Game() {
 	window.close();
 }
 
+void Game::enventHandler() {
+	sf::Vector2f cursorPosition = (sf::Vector2f)sf::Mouse::getPosition(window);
+	sf::Event event;
+	while (window.pollEvent(event)) {
+		if (event.type == sf::Event::Closed)
+			window.close();
+		else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+			for (uint i = 0; i < 8; i++) {
+				for (char j = 0; j < 8; j++) {
+					if (board.getSquareShape(Location()).getGlobalBounds().contains(cursorPosition)) {
+						selected.set(i, j);
+						board.getSquareShape(selected).setFillColor(sf::Color(100, 0, 0, 155));
+						std::cout << "Helo" << std::endl;
+					}
+				}
+			}
+		}
+		// else if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left)
+	}
+}
+
 void Game::loop() {
 	while (window.isOpen()) {
-		sf::Event event;
-		while (window.pollEvent(event)) {
-			if (event.type == sf::Event::Closed)
-				window.close();
-		}
+		enventHandler();
 		window.clear(sf::Color::White);
 		board.draw(window);
 		for (auto& p : whites) p.draw(window);

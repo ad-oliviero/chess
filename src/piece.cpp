@@ -1,5 +1,5 @@
 #include "piece.hpp"
-#include "common.h"
+#include "common.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 
@@ -15,9 +15,6 @@ Piece::Piece(uint type, uint team) {
 	sprite.setPosition(sf::Vector2f(0, 0));
 }
 
-Piece::~Piece() {
-}
-
 void Piece::draw(sf::RenderWindow& window) {
 	window.draw(sprite);
 }
@@ -27,7 +24,7 @@ void Piece::setLocation(uint row, char column, float squareSize) {
 	column -= 'a';
 	if (column > 'h' - 'a') throw std::runtime_error("COLUMN must be < 'h'!");
 	if (column < 0) throw std::runtime_error("COLUMN must be > 'a'!");
-	location = {row, column};
+	location.set(row, column);
 	setPosition(row * squareSize, column * squareSize);
 }
 
@@ -44,6 +41,6 @@ void Piece::setTeam(bool newTeam) {
 void Piece::setType(uint newType) {
 	if (newType > sizeof(PIECE_TYPE) + 1) throw std::runtime_error("TYPE must be < " + std::to_string(sizeof(PIECE_TYPE) + 1) + "!");
 	type = newType;
-	if (!texture.loadFromFile("res/" + piece_name[this->type] + ".png"))
-		throw std::runtime_error("Failed to load res/" + piece_name[this->type] + ".png");
+	if (!texture.loadFromFile("../res/" + piece_name[this->type] + ".png"))
+		throw std::runtime_error("Failed to load ../res/" + piece_name[this->type] + ".png");
 }

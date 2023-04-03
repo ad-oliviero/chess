@@ -1,14 +1,15 @@
 #ifndef _PIECE_HPP_
 #define _PIECE_HPP_
 
-#include "common.h"
+#include "common.hpp"
+#include "location.hpp"
 #include <SFML/Graphics.hpp>
 
 class Piece {
 public:
 	Piece() : Piece(0, 0){};
 	Piece(uint, uint);
-	~Piece();
+	~Piece(){};
 	void draw(sf::RenderWindow&);
 	void setLocation(uint, char, float);
 	void setPosition(float, float);
