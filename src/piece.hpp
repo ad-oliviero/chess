@@ -6,8 +6,8 @@
 
 class Piece {
 public:
-	Piece() : Piece(0, 0, 0){};
-	Piece(uint, uint, uint);
+	Piece() : Piece(0, 0){};
+	Piece(uint, uint);
 	~Piece();
 	void draw(sf::RenderWindow&);
 	void setLocation(uint, char, float);
@@ -24,7 +24,6 @@ private:
 	sf::Texture texture;
 	sf::Font font;
 	sf::Sprite sprite;
-	sf::Text label;
 	Location location;
 	uint type;
 	bool team;
