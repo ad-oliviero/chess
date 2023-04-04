@@ -17,7 +17,7 @@ public:
 private:
 	sf::RenderWindow window;
 	Board board;
-	Location selected;
+	Square* previousSelection;
 	Piece blacks[16];
 	Piece whites[16];
 };

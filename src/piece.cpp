@@ -1,5 +1,5 @@
-#include "piece.hpp"
-#include "common.hpp"
+#include "headers/piece.hpp"
+#include "headers/common.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 

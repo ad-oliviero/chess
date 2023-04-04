@@ -1,4 +1,4 @@
-#include "location.hpp"
+#include "headers/location.hpp"
 #include <iostream>
 
 Location::Location(uint row, char column) {
@@ -6,8 +6,8 @@ Location::Location(uint row, char column) {
 }
 
 void Location::check() {
-	if (row < 8) throw std::runtime_error("row value must be higher than 8!");
-	if (column < 8) throw std::runtime_error("column value must be higher than 8!");
+	if (row > 8) throw std::runtime_error("row value must be less than 8!");
+	if (column > 8) throw std::runtime_error("column value must be less than 8!");
 }
 
 void Location::set(uint row, char column) {

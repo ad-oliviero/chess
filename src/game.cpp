@@ -1,6 +1,6 @@
-#include "game.hpp"
-#include "board.hpp"
-#include "piece.hpp"
+#include "headers/game.hpp"
+#include "headers/board.hpp"
+#include "headers/piece.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
@@ -8,6 +8,7 @@ Game::Game() {
 	window.create(sf::VideoMode(800, 800), "chess");
 	window.setVerticalSyncEnabled(true);
 	setupPieces();
+	previousSelection = NULL;
 }
 
 Game::~Game() {
@@ -23,10 +24,11 @@ void Game::enventHandler() {
 		else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 			for (uint i = 0; i < 8; i++) {
 				for (char j = 0; j < 8; j++) {
-					if (board.getSquareShape(Location()).getGlobalBounds().contains(cursorPosition)) {
-						selected.set(i, j);
-						board.getSquareShape(selected).setFillColor(sf::Color(100, 0, 0, 155));
-						std::cout << "Helo" << std::endl;
+					Square& square = board.getSquare(Location(i, j));
+					if (square.getShape().getGlobalBounds().contains(cursorPosition)) {
+						if (previousSelection)
+							previousSelection->deselect();
+						previousSelection = square.select();
 					}
 				}
 			}
@@ -38,7 +40,7 @@ void Game::enventHandler() {
 void Game::loop() {
 	while (window.isOpen()) {
 		enventHandler();
-		window.clear(sf::Color::White);
+		window.clear(sf::Color::Black);
 		board.draw(window);
 		for (auto& p : whites) p.draw(window);
 		for (auto& p : blacks) p.draw(window);
@@ -52,7 +54,7 @@ void Game::setupPieces() {
 }
 
 void Game::setupTeam(Piece team[16], bool teamColor) {
-	float sqsize = board.getSquareSize();
+	float sqsize = board.getSquare(Location(0, 0)).getSize();
 	char voffset = (teamColor * 8) + !teamColor;
 	for (uint i = 0; i < 8; i++) {
 		team[i].setTeam(teamColor);
