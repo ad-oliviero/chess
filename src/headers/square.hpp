@@ -2,6 +2,7 @@
 #define _SQUARE_HPP_
 
 #include "location.hpp"
+#include "piece.hpp"
 #include <SFML/Graphics.hpp>
 
 class Square {
@@ -12,10 +13,12 @@ public:
 	void setColor(sf::Color);
 	void setSize(float);
 	void setPosition(Location);
-	void draw(sf::RenderWindow&);
+	void setValue(unsigned int);
+	void draw(sf::RenderWindow&) const;
 	float getSize() { return shape.getSize().x; }
 	sf::RectangleShape& getShape() { return shape; }
-	int getValue() { return value; }
+	int getValue() const { return value; }
+	Location getLocation() const { return location; }
 	Square* select();
 	void deselect();
 
@@ -23,7 +26,7 @@ private:
 	sf::RectangleShape shape;
 	sf::RectangleShape selectShape;
 	Location location;
-	int value;
+	unsigned int value;
 };
 
 #endif // _SQUARE_HPP_

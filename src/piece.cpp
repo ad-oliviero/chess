@@ -1,11 +1,12 @@
 #include "headers/piece.hpp"
 #include "headers/common.hpp"
+#include "headers/images.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 
 static const std::string piece_name[] = {"pawn", "tower", "horse", "bishop", "king", "queen"};
 
-Piece::Piece(uint type, uint team) {
+Piece::Piece(unsigned int type, unsigned int team) {
 	this->setType(type);
 	this->setTeam(team);
 
@@ -19,13 +20,23 @@ void Piece::draw(sf::RenderWindow& window) {
 	window.draw(sprite);
 }
 
-void Piece::setLocation(uint row, char column, float squareSize) {
-	if (row > 8) throw std::runtime_error("ROW must be < 8!");
-	column -= 'a';
-	if (column > 'h' - 'a') throw std::runtime_error("COLUMN must be < 'h'!");
-	if (column < 0) throw std::runtime_error("COLUMN must be > 'a'!");
-	location.set(row, column);
+void Piece::setLocation(unsigned int row, unsigned int column, float squareSize) {
+	setLocation(row, column);
 	setPosition(row * squareSize, column * squareSize);
+}
+
+void Piece::setLocation(Location location) {
+	setLocation(location.getRow(), location.getColumn());
+}
+
+void Piece::setLocation(Location location, float squareSize) {
+	setLocation(location.getRow(), location.getColumn());
+	setPosition(location.getRow() * squareSize, location.getColumn() * squareSize);
+}
+
+void Piece::setLocation(unsigned int row, unsigned int column) {
+	location.set(row, column);
+	location.check();
 }
 
 void Piece::setPosition(float x, float y) {
@@ -38,9 +49,8 @@ void Piece::setTeam(bool newTeam) {
 	sprite.setColor(team == Piece::White ? sf::Color::White : sf::Color(95, 95, 95, 255));
 }
 
-void Piece::setType(uint newType) {
-	if (newType > sizeof(PIECE_TYPE) + 1) throw std::runtime_error("TYPE must be < " + std::to_string(sizeof(PIECE_TYPE) + 1) + "!");
+void Piece::setType(unsigned int newType) {
+	if (newType > QUEEN + 1) throw std::runtime_error("TYPE must be < " + std::to_string(QUEEN + 1) + "!");
 	type = newType;
-	if (!texture.loadFromFile("../res/" + piece_name[this->type] + ".png"))
-		throw std::runtime_error("Failed to load ../res/" + piece_name[this->type] + ".png");
+	texture.loadFromMemory(images_data[type], images_data_len[type]);
 }

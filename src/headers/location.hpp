@@ -2,22 +2,24 @@
 #define _LOCATION_HPP_
 
 #include "common.hpp"
+#include <iostream>
 
 class Location {
 private:
-	uint row;
-	char column;
+	unsigned int row;
+	unsigned int column;
 
 public:
 	Location() : Location(9, 9){};
-	Location(uint, char);
+	Location(unsigned int, unsigned int);
 	~Location(){};
-	void set(uint, char);
-	uint getRow() { return row; }
-	char getColumn() { return column; }
+	void set(unsigned int, unsigned int);
+	unsigned int getRow() const { return row; }
+	unsigned int getColumn() const { return column; }
 	void check();
 	bool operator==(const Location& other) const { return (row == other.row) && (column == other.column); }
 	bool operator!=(const Location& other) const { return !(*this == other); }
+	friend std::ostream& operator<<(std::ostream&, const Location&);
 };
 
 #endif // _LOCATION_HPP_

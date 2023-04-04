@@ -1,7 +1,8 @@
 #include "headers/square.hpp"
+#include "headers/common.hpp"
 
 Square::Square(float size, float x, float y, sf::Color color) {
-	value = 0;
+	value = NONE;
 	location.set(0, 0);
 	shape.setSize(sf::Vector2f(size, size));
 	shape.setFillColor(color);
@@ -27,7 +28,11 @@ void Square::setPosition(Location location) {
 	selectShape.setPosition(sf::Vector2f(x, y));
 }
 
-void Square::draw(sf::RenderWindow& window) {
+void Square::setValue(unsigned int value) {
+	this->value = value;
+}
+
+void Square::draw(sf::RenderWindow& window) const {
 	window.draw(shape);
 	window.draw(selectShape);
 }

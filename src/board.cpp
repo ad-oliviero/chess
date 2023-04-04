@@ -13,13 +13,28 @@ Board::Board(float squaresz) {
 	}
 }
 
-void Board::draw(sf::RenderWindow& window) {
+void Board::draw(sf::RenderWindow& window) const {
 	for (int i = 0; i < 8; i++)
 		for (int j = 0; j < 8; j++)
 			squares[i][j].draw(window);
 }
 
-Square& Board::getSquare(Location location) {
+const Square& Board::getSquare(Location location) const {
 	location.check();
 	return squares[location.getRow()][location.getColumn()];
+}
+
+Square& Board::getSquareHandle(Location location) {
+	location.check();
+	return squares[location.getRow()][location.getColumn()];
+}
+
+std::ostream& operator<<(std::ostream& os, const Board& b) {
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			os << b.getSquare(Location(j, i)).getValue() << "  ";
+		}
+		os << '\n';
+	}
+	return os;
 }

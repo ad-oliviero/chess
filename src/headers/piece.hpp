@@ -8,13 +8,18 @@
 class Piece {
 public:
 	Piece() : Piece(0, 0){};
-	Piece(uint, uint);
+	Piece(unsigned int, unsigned int);
 	~Piece(){};
 	void draw(sf::RenderWindow&);
-	void setLocation(uint, char, float);
+	void setLocation(unsigned int, unsigned int);
+	void setLocation(Location);
+	void setLocation(unsigned int, unsigned int, float);
+	void setLocation(Location, float);
 	void setPosition(float, float);
 	void setTeam(bool);
-	void setType(uint);
+	void setType(unsigned int);
+	Location getLocation() { return location; }
+	unsigned int getType() { return type; }
 
 	enum Team {
 		White,
@@ -26,7 +31,7 @@ private:
 	sf::Font font;
 	sf::Sprite sprite;
 	Location location;
-	uint type;
+	unsigned int type;
 	bool team;
 };
 

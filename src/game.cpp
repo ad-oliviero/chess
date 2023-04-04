@@ -8,7 +8,7 @@ Game::Game() {
 	window.create(sf::VideoMode(800, 800), "chess");
 	window.setVerticalSyncEnabled(true);
 	setupPieces();
-	previousSelection = NULL;
+	selected = NULL;
 }
 
 Game::~Game() {
@@ -22,16 +22,22 @@ void Game::enventHandler() {
 		if (event.type == sf::Event::Closed)
 			window.close();
 		else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-			for (uint i = 0; i < 8; i++) {
-				for (char j = 0; j < 8; j++) {
-					Square& square = board.getSquare(Location(i, j));
+			for (unsigned int i = 0; i < 8; i++) {
+				for (unsigned int j = 0; j < 8; j++) {
+					Square& square = board.getSquareHandle(Location(i, j));
 					if (square.getShape().getGlobalBounds().contains(cursorPosition)) {
-						if (previousSelection)
-							previousSelection->deselect();
-						previousSelection = square.select();
+						if (selected) {
+							selected->deselect();
+							movePiece(getPieceHandle(selected->getLocation()), square.getLocation());
+							selected = NULL;
+						} else
+							selected = square.select();
 					}
 				}
 			}
+			// std::cout << board << std::endl;
+			for (auto& w : whites) std::cout << w.getLocation() << "\n";
+			std::cout << std::endl;
 		}
 		// else if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left)
 	}
@@ -54,23 +60,43 @@ void Game::setupPieces() {
 }
 
 void Game::setupTeam(Piece team[16], bool teamColor) {
-	float sqsize = board.getSquare(Location(0, 0)).getSize();
-	char voffset = (teamColor * 8) + !teamColor;
-	for (uint i = 0; i < 8; i++) {
+	float sqsize				 = board.getSquareHandle(Location(0, 0)).getSize();
+	unsigned int voffset = ((teamColor * 8) + !teamColor) - 1;
+	for (unsigned int i = 0; i < 8; i++) {
 		team[i].setTeam(teamColor);
-		team[i].setLocation(i, 'a' + (voffset - 1), sqsize);
+		team[i].setLocation(i, voffset, sqsize);
 
 		team[8 + i].setTeam(teamColor);
-		team[8 + i].setLocation(i, 'b' + (voffset - 1 - (2 * teamColor)), sqsize);
+		team[8 + i].setLocation(i, (voffset - (2 * teamColor) + 1), sqsize);
 		team[8 + i].setType(PAWN);
+		board.getSquareHandle(Location(i, (voffset - (2 * teamColor)) + 1)).setValue(PAWN);
 	}
 
-	team[0].setType(TOWER);
-	team[7].setType(TOWER);
-	team[1].setType(HORSE);
-	team[6].setType(HORSE);
-	team[2].setType(BISHOP);
-	team[5].setType(BISHOP);
-	team[3].setType(QUEEN);
-	team[4].setType(KING);
+	for (int i = 0; i < 2; i++) {
+		place(team[i], TOWER + i);
+		place(team[7 - i], TOWER + i);
+	}
+	place(team[3], QUEEN);
+	place(team[4], KING);
+}
+
+void Game::place(Piece& piece, unsigned int type) {
+	piece.setType(type);
+	board.getSquareHandle(piece.getLocation()).setValue(type);
+}
+
+void Game::movePiece(Piece& piece, Location newLocation) {
+	board.getSquareHandle(piece.getLocation()).setValue(NONE);
+	Square& newSquare = board.getSquareHandle(newLocation);
+	piece.setLocation(newLocation, newSquare.getSize());
+	newSquare.setValue(piece.getType());
+}
+
+Piece& Game::getPieceHandle(Location location) {
+	location.check();
+	for (int i = 0; i < 16; i++) {
+		if (whites[i].getLocation() == location) return whites[i];
+		if (blacks[i].getLocation() == location) return blacks[i];
+	}
+	throw std::runtime_error("TODO: Piece got eaten!");
 }

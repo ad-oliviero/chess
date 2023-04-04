@@ -13,11 +13,14 @@ public:
 	void setupPieces();
 	void setupTeam(Piece[16], bool);
 	void enventHandler();
+	void place(Piece&, unsigned int);
+	void movePiece(Piece&, Location);
+	Piece& getPieceHandle(Location);
 
 private:
 	sf::RenderWindow window;
 	Board board;
-	Square* previousSelection;
+	Square* selected;
 	Piece blacks[16];
 	Piece whites[16];
 };
