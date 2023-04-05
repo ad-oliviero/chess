@@ -28,10 +28,23 @@ void Game::enventHandler() {
 					if (square.getShape().getGlobalBounds().contains(cursorPosition)) {
 						if (selected) {
 							selected->deselect();
-							movePiece(getPieceHandle(selected->getLocation()), square.getLocation());
+							try {
+								getPieceHandle(square.getLocation());
+							} catch (const std::runtime_error& e) {
+								if (checkMove(getPieceHandle(selected->getLocation()), square.getLocation())) {
+									movePiece(getPieceHandle(selected->getLocation()), square.getLocation());
+								}
+							}
 							selected = NULL;
-						} else
+						} else {
 							selected = square.select();
+							try {
+								getPieceHandle(selected->getLocation());
+							} catch (const std::runtime_error& e) {
+								selected->deselect();
+								selected = NULL;
+							}
+						}
 					}
 				}
 			}
@@ -64,10 +77,10 @@ void Game::setupTeam(Piece team[16], bool teamColor) {
 		team[i].setTeam(teamColor);
 		team[i].setLocation(i, voffset, sqsize);
 
-		team[8 + i].setTeam(teamColor);
-		team[8 + i].setLocation(i, (voffset - (2 * teamColor) + 1), sqsize);
-		team[8 + i].setType(PAWN);
-		board.getSquareHandle(Location(i, (voffset - (2 * teamColor)) + 1)).setValue(PAWN);
+		// team[8 + i].setTeam(teamColor);
+		// team[8 + i].setLocation(i, (voffset - (2 * teamColor) + 1), sqsize);
+		// team[8 + i].setType(PAWN);
+		// board.getSquareHandle(Location(i, (voffset - (2 * teamColor)) + 1)).setValue(PAWN);
 	}
 
 	for (int i = 0; i < 2; i++) {
@@ -83,6 +96,19 @@ void Game::place(Piece& piece, unsigned int type) {
 	board.getSquareHandle(piece.getLocation()).setValue(type);
 }
 
+bool Game::checkMove(Piece& piece, Location newLocation) {
+	Location pieceLocation = piece.getLocation();
+	if (piece.getType() == PAWN) {
+		return true;
+	} else if (piece.getType() == TOWER) {
+		Location diff = pieceLocation - newLocation;
+		if (diff.getRow() == 0 || diff.getColumn() == 0) {
+			return true;
+		}
+	}
+	return false;
+}
+
 void Game::movePiece(Piece& piece, Location newLocation) {
 	board.getSquareHandle(piece.getLocation()).setValue(NONE);
 	Square& newSquare = board.getSquareHandle(newLocation);
@@ -96,7 +122,7 @@ Piece& Game::getPieceHandle(Location location) {
 		if (whites[i].getLocation() == location) return whites[i];
 		if (blacks[i].getLocation() == location) return blacks[i];
 	}
-	throw std::runtime_error("TODO: Piece got eaten!");
+	throw std::runtime_error("Piece in location: " + location.to_string() + " not found!");
 }
 
 int main() {

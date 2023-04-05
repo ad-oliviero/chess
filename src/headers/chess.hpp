@@ -14,6 +14,7 @@ public:
 	void setupTeam(Piece[16], bool);
 	void enventHandler();
 	void place(Piece&, unsigned int);
+	bool checkMove(Piece&, Location);
 	void movePiece(Piece&, Location);
 	Piece& getPieceHandle(Location);
 
