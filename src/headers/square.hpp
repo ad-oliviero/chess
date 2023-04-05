@@ -19,12 +19,15 @@ public:
 	sf::RectangleShape& getShape() { return shape; }
 	int getValue() const { return value; }
 	Location getLocation() const { return location; }
+	void setPossible();
+	void setNotPossible();
 	Square* select();
 	void deselect();
 
 private:
 	sf::RectangleShape shape;
 	sf::RectangleShape selectShape;
+	sf::CircleShape possibleShape;
 	Location location;
 	unsigned int value;
 };

@@ -28,6 +28,7 @@ void Game::enventHandler() {
 					if (square.getShape().getGlobalBounds().contains(cursorPosition)) {
 						if (selected) {
 							selected->deselect();
+							resetPossibilities();
 							if (checkMove(getPieceHandle(selected->getLocation()), square)) {
 								std::cout << "MOVED from " << getPieceHandle(selected->getLocation()).getLocation() << " to " << square.getLocation() << std::endl;
 								movePiece(getPieceHandle(selected->getLocation()), square.getLocation());
@@ -35,10 +36,12 @@ void Game::enventHandler() {
 							selected = NULL;
 						} else {
 							selected = square.select();
+							allLegalMoves();
 							try {
 								getPieceHandle(selected->getLocation());
 							} catch (const std::runtime_error& e) {
 								selected->deselect();
+								resetPossibilities();
 								selected = NULL;
 							}
 						}
@@ -93,6 +96,25 @@ void Game::place(Piece& piece, unsigned int type) {
 	board.getSquareHandle(piece.getLocation()).setValue(type);
 }
 
+void Game::allLegalMoves() {
+	if (!selected) return;
+	auto& selectedPiece = getPieceHandle(selected->getLocation());
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			auto& sq = board.getSquareHandle(Location(i, j));
+			if (checkMove(selectedPiece, sq)) sq.setPossible();
+		}
+	}
+}
+
+void Game::resetPossibilities() {
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			board.getSquareHandle(Location(i, j)).setNotPossible();
+		}
+	}
+}
+
 bool Game::checkMove(Piece& piece, Square square) {
 	Location current = piece.getLocation();
 	Location target	 = square.getLocation();
@@ -102,13 +124,20 @@ bool Game::checkMove(Piece& piece, Square square) {
 	} catch (const std::runtime_error& e) {
 	}
 	if (current == target) return false;
+	Location diff = current - square.getLocation();
 	if (piece.getType() == PAWN) {
-		return true;
+		if (piece.getTeam() == Piece::White) diff = Location(0, 0) - diff;
+		if (diff.getRow() == 0 && diff.getColumn() <= 1) return true;
 	} else if (piece.getType() == TOWER) {
-		Location diff = current - square.getLocation();
-		if (diff.getRow() == 0 || diff.getColumn() == 0) {
-			return true;
-		}
+		if (diff.getRow() == 0 || diff.getColumn() == 0) return true;
+	} else if (piece.getType() == HORSE) {
+		if (diff == Location(2, 1) || diff == Location(1, 2)) return true;
+	} else if (piece.getType() == BISHOP) {
+		if (diff.getRow() == diff.getColumn()) return true;
+	} else if (piece.getType() == KING) {
+		return true;
+	} else if (piece.getType() == QUEEN) {
+		return true;
 	}
 	return false;
 }

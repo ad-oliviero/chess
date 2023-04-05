@@ -9,6 +9,9 @@ Square::Square(float size, float x, float y, sf::Color color) {
 
 	selectShape.setSize(sf::Vector2f(size, size));
 	selectShape.setFillColor(sf::Color(0, 0, 0, 0));
+
+	possibleShape.setRadius(size / 3);
+	setNotPossible();
 }
 
 void Square::setColor(sf::Color color) {
@@ -22,10 +25,12 @@ void Square::setSize(float size) {
 void Square::setPosition(Location location) {
 	location.check();
 	this->location = location;
-	float x				 = this->location.getRow() * shape.getSize().x;
-	float y				 = this->location.getColumn() * shape.getSize().y;
+	float size		 = shape.getSize().x;
+	float x				 = this->location.getRow() * size;
+	float y				 = this->location.getColumn() * size;
 	shape.setPosition(sf::Vector2f(x, y));
 	selectShape.setPosition(sf::Vector2f(x, y));
+	possibleShape.setPosition(sf::Vector2f(x + (size / 5), y + (size / 5)));
 }
 
 void Square::setValue(unsigned int value) {
@@ -34,7 +39,16 @@ void Square::setValue(unsigned int value) {
 
 void Square::draw(sf::RenderWindow& window) const {
 	window.draw(shape);
+	window.draw(possibleShape);
 	window.draw(selectShape);
+}
+
+void Square::setPossible() {
+	possibleShape.setFillColor(sf::Color(100, 150, 100, 75));
+}
+
+void Square::setNotPossible() {
+	possibleShape.setFillColor(sf::Color(0, 0, 0, 0));
 }
 
 Square* Square::select() {

@@ -20,6 +20,7 @@ public:
 	void setType(unsigned int);
 	Location getLocation() { return location; }
 	unsigned int getType() { return type; }
+	bool getTeam() { return team; }
 
 	enum Team {
 		White,

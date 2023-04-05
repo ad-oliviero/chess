@@ -15,6 +15,8 @@ public:
 	void enventHandler();
 	void place(Piece&, unsigned int);
 	bool checkMove(Piece&, Square);
+	void allLegalMoves();
+	void resetPossibilities();
 	void movePiece(Piece&, Location);
 	Piece& getPieceHandle(Location);
 
