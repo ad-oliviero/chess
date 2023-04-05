@@ -1,4 +1,4 @@
-#include "headers/game.hpp"
+#include "headers/chess.hpp"
 #include "headers/board.hpp"
 #include "headers/piece.hpp"
 #include <SFML/Graphics.hpp>
@@ -36,8 +36,6 @@ void Game::enventHandler() {
 				}
 			}
 			// std::cout << board << std::endl;
-			for (auto& w : whites) std::cout << w.getLocation() << "\n";
-			std::cout << std::endl;
 		}
 		// else if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left)
 	}
@@ -99,4 +97,10 @@ Piece& Game::getPieceHandle(Location location) {
 		if (blacks[i].getLocation() == location) return blacks[i];
 	}
 	throw std::runtime_error("TODO: Piece got eaten!");
+}
+
+int main() {
+	Game game;
+	game.loop();
+	return 0;
 }

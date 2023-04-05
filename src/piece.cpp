@@ -4,8 +4,6 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 
-static const std::string piece_name[] = {"pawn", "tower", "horse", "bishop", "king", "queen"};
-
 Piece::Piece(unsigned int type, unsigned int team) {
 	this->setType(type);
 	this->setTeam(team);
