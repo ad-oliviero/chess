@@ -28,13 +28,8 @@ void Game::enventHandler() {
 					if (square.getShape().getGlobalBounds().contains(cursorPosition)) {
 						if (selected) {
 							selected->deselect();
-							try {
-								getPieceHandle(square.getLocation());
-							} catch (const std::runtime_error& e) {
-								if (checkMove(getPieceHandle(selected->getLocation()), square.getLocation())) {
-									movePiece(getPieceHandle(selected->getLocation()), square.getLocation());
-								}
-							}
+							if (checkMove(getPieceHandle(selected->getLocation()), square))
+								movePiece(getPieceHandle(selected->getLocation()), square.getLocation());
 							selected = NULL;
 						} else {
 							selected = square.select();
@@ -96,12 +91,17 @@ void Game::place(Piece& piece, unsigned int type) {
 	board.getSquareHandle(piece.getLocation()).setValue(type);
 }
 
-bool Game::checkMove(Piece& piece, Location newLocation) {
+bool Game::checkMove(Piece& piece, Square square) {
+	try {
+		getPieceHandle(square.getLocation());
+		return false;
+	} catch (const std::runtime_error& e) {
+	}
 	Location pieceLocation = piece.getLocation();
 	if (piece.getType() == PAWN) {
 		return true;
 	} else if (piece.getType() == TOWER) {
-		Location diff = pieceLocation - newLocation;
+		Location diff = pieceLocation - square.getLocation();
 		if (diff.getRow() == 0 || diff.getColumn() == 0) {
 			return true;
 		}
