@@ -28,8 +28,10 @@ void Game::enventHandler() {
 					if (square.getShape().getGlobalBounds().contains(cursorPosition)) {
 						if (selected) {
 							selected->deselect();
-							if (checkMove(getPieceHandle(selected->getLocation()), square))
+							if (checkMove(getPieceHandle(selected->getLocation()), square)) {
+								std::cout << "MOVED from " << getPieceHandle(selected->getLocation()).getLocation() << " to " << square.getLocation() << std::endl;
 								movePiece(getPieceHandle(selected->getLocation()), square.getLocation());
+							}
 							selected = NULL;
 						} else {
 							selected = square.select();
@@ -72,13 +74,13 @@ void Game::setupTeam(Piece team[16], bool teamColor) {
 		team[i].setTeam(teamColor);
 		team[i].setLocation(i, voffset, sqsize);
 
-		// team[8 + i].setTeam(teamColor);
-		// team[8 + i].setLocation(i, (voffset - (2 * teamColor) + 1), sqsize);
-		// team[8 + i].setType(PAWN);
-		// board.getSquareHandle(Location(i, (voffset - (2 * teamColor)) + 1)).setValue(PAWN);
+		team[8 + i].setTeam(teamColor);
+		team[8 + i].setLocation(i, (voffset - (2 * teamColor) + 1), sqsize);
+		team[8 + i].setType(PAWN);
+		board.getSquareHandle(Location(i, (voffset - (2 * teamColor)) + 1)).setValue(PAWN);
 	}
 
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < 3; i++) {
 		place(team[i], TOWER + i);
 		place(team[7 - i], TOWER + i);
 	}
@@ -92,16 +94,18 @@ void Game::place(Piece& piece, unsigned int type) {
 }
 
 bool Game::checkMove(Piece& piece, Square square) {
+	Location current = piece.getLocation();
+	Location target	 = square.getLocation();
 	try {
-		getPieceHandle(square.getLocation());
+		getPieceHandle(target);
 		return false;
 	} catch (const std::runtime_error& e) {
 	}
-	Location pieceLocation = piece.getLocation();
+	if (current == target) return false;
 	if (piece.getType() == PAWN) {
 		return true;
 	} else if (piece.getType() == TOWER) {
-		Location diff = pieceLocation - square.getLocation();
+		Location diff = current - square.getLocation();
 		if (diff.getRow() == 0 || diff.getColumn() == 0) {
 			return true;
 		}
