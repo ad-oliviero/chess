@@ -42,7 +42,6 @@ void Piece::setPosition(float x, float y) {
 }
 
 void Piece::setTeam(bool newTeam) {
-	if (team > 2) throw std::runtime_error("TEAM must be < 2!");
 	team = newTeam;
 	sprite.setColor(team == Piece::White ? sf::Color::White : sf::Color(95, 95, 95, 255));
 }

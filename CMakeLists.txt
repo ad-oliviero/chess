@@ -1,15 +1,19 @@
 cmake_minimum_required(VERSION 3.14)
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_COMPILER "g++")
 
 include(FetchContent)
 
 FetchContent_Declare(
- SFML
- GIT_REPOSITORY https://github.com/SFML/SFML.git
- GIT_TAG 2.5.1
+    SFML
+    GIT_REPOSITORY https://github.com/SFML/SFML.git
+    GIT_TAG 2.5.1
 )
 FetchContent_MakeAvailable(SFML)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_COMPILER "clang++")
+if (CMAKE_BUILD_TYPE MATCHES DEBUG)
+    set(COMPILE_FLAGS  "-Wall -Wextra -g")
+endif()
 
 project(
     chess
