@@ -77,10 +77,10 @@ void Game::setupTeam(Piece team[16], bool teamColor) {
 		team[i].setTeam(teamColor);
 		team[i].setLocation(i, voffset, sqsize);
 
-		team[8 + i].setTeam(teamColor);
-		team[8 + i].setLocation(i, (voffset - (2 * teamColor) + 1), sqsize);
-		team[8 + i].setType(PAWN);
-		board.getSquareHandle(Location(i, (voffset - (2 * teamColor)) + 1)).setValue(PAWN);
+		// team[8 + i].setTeam(teamColor);
+		// team[8 + i].setLocation(i, (voffset - (2 * teamColor) + 1), sqsize);
+		// team[8 + i].setType(PAWN);
+		// board.getSquareHandle(Location(i, (voffset - (2 * teamColor)) + 1)).setValue(PAWN);
 	}
 
 	for (int i = 0; i < 3; i++) {
@@ -135,9 +135,9 @@ bool Game::checkMove(Piece& piece, Square square) {
 	} else if (piece.getType() == BISHOP) {
 		if (diff.getRow() == diff.getColumn()) return true;
 	} else if (piece.getType() == KING) {
-		return true;
+		if (diff.getRow() <= 1 && diff.getColumn() <= 1) return true;
 	} else if (piece.getType() == QUEEN) {
-		return true;
+		if ((diff.getRow() == 0 || diff.getColumn() == 0) || (diff.getRow() == diff.getColumn())) return true;
 	}
 	return false;
 }
