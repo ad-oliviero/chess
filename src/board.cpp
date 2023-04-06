@@ -1,5 +1,6 @@
 #include "headers/board.hpp"
 #include "headers/common.hpp"
+#include "headers/vector2.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
@@ -8,32 +9,50 @@ Board::Board(float squaresz) {
 		for (int j = 0; j < 8; j++) {
 			squares[i][j].setSize(squaresz);
 			squares[i][j].setColor(((i + j) % 2 == 0) ? sf::Color(200, 200, 200, 255) : sf::Color(50, 50, 50, 255));
-			squares[i][j].setPosition(Location(i, j));
+			squares[i][j].setPosition(i, j);
+			squares[i][j].getPieceHandle().setPosition(i, j, squaresz);
 		}
+	}
+	setupTeam(Piece::White);
+	setupTeam(Piece::Black);
+}
+
+void Board::setupTeam(bool color) {
+	float sqsize = squares[0][0].getSize();
+	for (unsigned int i = 0; i < 8; i++) {
+		auto& piece					 = squares[i][7 * color].getPieceHandle();
+		auto& pieceSecondRow = squares[i][1 + (5 * color)].getPieceHandle();
+		piece.setTeam(color);
+
+		pieceSecondRow.setTeam(color);
+		// pieceSecondRow.setType(PAWN);
+	}
+
+	for (int i = 0; i < 8; i += 7) {
+		/* why am I accessing the square by [j][i] and not [i][j] as per convention?
+		 * maybe I'm stupid as it took me about 2h to understand why "the pieces were placed vertically"
+		 * the way I understand this is that we should not think at the squares array as a bi-dimentional array (matrix)
+		 * but rather as a table accessed by coordinates, so the first one is the x (and it goes from 0 to 8)
+		 * and the y (we access only 0, 1, 6 and 7).
+		 */
+		for (int j = 0; j < 3; j++) {
+			squares[j][i].getPieceHandle().setType(TOWER + j);
+			squares[7 - j][i].getPieceHandle().setType(TOWER + j);
+		}
+		squares[3][i].getPieceHandle().setType(QUEEN);
+		squares[4][i].getPieceHandle().setType(KING);
 	}
 }
 
 void Board::draw(sf::RenderWindow& window) const {
-	for (int i = 0; i < 8; i++)
-		for (int j = 0; j < 8; j++)
-			squares[i][j].draw(window);
-}
-
-const Square& Board::getSquare(Location location) const {
-	location.check();
-	return squares[location.getRow()][location.getColumn()];
-}
-
-Square& Board::getSquareHandle(Location location) {
-	location.check();
-	return squares[location.getRow()][location.getColumn()];
+	for (auto& r : squares)
+		for (auto& s : r) s.draw(window);
 }
 
 std::ostream& operator<<(std::ostream& os, const Board& b) {
 	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; j++) {
-			os << b.getSquare(Location(j, i)).getValue() << "  ";
-		}
+		for (int j = 0; j < 8; j++)
+			os << b.getSquare(j, i).getPiece().getType() << "  ";
 		os << '\n';
 	}
 	return os;

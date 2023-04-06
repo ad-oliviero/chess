@@ -1,8 +1,8 @@
 #ifndef _SQUARE_HPP_
 #define _SQUARE_HPP_
 
-#include "location.hpp"
 #include "piece.hpp"
+#include "vector2.hpp"
 #include <SFML/Graphics.hpp>
 
 class Square {
@@ -12,15 +12,17 @@ public:
 	~Square(){};
 	void setColor(sf::Color);
 	void setSize(float);
-	void setPosition(Location);
-	void setValue(unsigned int);
+	void setPosition(unsigned int, unsigned int);
+	void setPiece(Piece);
+	void setPossible();
+	void setNotPossible();
+	void empty();
 	void draw(sf::RenderWindow&) const;
 	float getSize() { return shape.getSize().x; }
 	sf::RectangleShape& getShape() { return shape; }
-	int getValue() const { return value; }
-	Location getLocation() const { return location; }
-	void setPossible();
-	void setNotPossible();
+	const Vector2u& getPosition() const { return position; }
+	Piece getPiece() const { return piece; }
+	Piece& getPieceHandle() { return piece; }
 	Square* select();
 	void deselect();
 
@@ -28,8 +30,8 @@ private:
 	sf::RectangleShape shape;
 	sf::RectangleShape selectShape;
 	sf::CircleShape possibleShape;
-	Location location;
-	unsigned int value;
+	Vector2u position;
+	Piece piece;
 };
 
 #endif // _SQUARE_HPP_
