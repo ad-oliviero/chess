@@ -2,18 +2,23 @@
 #define _PIECE_HPP_
 
 #include "common.hpp"
+#include "vector2.hpp"
 #include <SFML/Graphics.hpp>
 
 class Piece {
 public:
-	Piece() : Piece(NONE, White){};
-	Piece(unsigned int, bool);
+	Piece() : Piece(NONE, White) {}
+	Piece(unsigned int type, bool team);
+	Piece(const Piece&, Vector2<float>);
 	~Piece(){};
 	void draw(sf::RenderWindow&) const;
 	void setPosition(float, float);
 	void setPosition(float, float, float);
+	void setPosition(Vector2<float>);
 	void setTeam(bool);
 	void setType(unsigned int);
+	void setEaten(Vector2<float>);
+	Piece& operator=(const Piece&);
 	unsigned int getType() { return type; }
 	bool getTeam() { return team; }
 
@@ -24,7 +29,6 @@ public:
 
 private:
 	sf::Texture texture;
-	sf::Font font;
 	sf::Sprite sprite;
 	unsigned int type;
 	bool team;

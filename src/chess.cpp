@@ -5,7 +5,7 @@
 #include <iostream>
 
 Game::Game() {
-	window.create(sf::VideoMode(800, 800), "chess");
+	window.create(sf::VideoMode(1000, 800), "chess");
 	window.setVerticalSyncEnabled(true);
 	selected = NULL;
 }
@@ -29,8 +29,8 @@ void Game::enventHandler() {
 							selected->deselect();
 							resetPossibilities();
 							if (checkMove(*selected, square)) {
-								std::cout << "MOVED from " << selected->getPosition() << " to " << square.getPosition() << std::endl;
 								move(*selected, square);
+								std::cout << "MOVED from " << selected->getPosition() << " to " << square.getPosition() << std::endl;
 							}
 							selected = NULL;
 						} else {
@@ -56,6 +56,7 @@ void Game::loop() {
 		enventHandler();
 		window.clear(sf::Color::Black);
 		board.draw(window);
+		for (auto& e : eaten) e.draw(window);
 		window.display();
 	}
 }
@@ -78,19 +79,19 @@ void Game::resetPossibilities() {
 
 bool Game::checkMove(Square& square, Square target) {
 	if (square.getPiece().getTeam() == NONE) return false;
-	Vector2u diff = square.getPosition() - target.getPosition();
+	Vector2<unsigned int> diff = square.getPosition() - target.getPosition();
 	if (diff == 0) return false;
 	Piece& piece = square.getPieceHandle();
 	if ((target.getPiece().getType() != NONE) && (piece.getTeam() == target.getPiece().getTeam())) return false;
 	if (piece.getType() == PAWN) {
-		if (piece.getTeam() == Piece::White) diff = Vector2u(0, 0) - diff;
+		if (piece.getTeam() == Piece::White) diff = Vector2<unsigned int>(0, 0) - diff;
 		if (diff.x == 0 && diff.y <= 1 &&
 				(piece.getTeam() == Piece::White ? square.getPosition().y < target.getPosition().y
 																				 : square.getPosition().y > target.getPosition().y)) return true;
 	} else if (piece.getType() == TOWER) {
 		if (diff.x == 0 || diff.y == 0) return true;
 	} else if (piece.getType() == HORSE) {
-		if (diff == Vector2u(2, 1) || diff == Vector2u(1, 2)) return true;
+		if (diff == Vector2<unsigned int>(2, 1) || diff == Vector2<unsigned int>(1, 2)) return true;
 	} else if (piece.getType() == BISHOP) {
 		if (diff.x == diff.y) return true;
 	} else if (piece.getType() == KING) {
@@ -102,8 +103,14 @@ bool Game::checkMove(Square& square, Square target) {
 }
 
 void Game::move(Square& square, Square& target) {
-	target.setPiece(square.getPiece());
+	if (target.getPiece().getType() != NONE) eat(target);
+	target.getPieceHandle().setTeam(square.getPiece().getTeam());
+	target.getPieceHandle().setType(square.getPiece().getType());
 	square.empty();
+}
+
+void Game::eat(const Square& square) {
+	eaten.push_back(Piece(square.getPiece(), Vector2(square.getSize() * 8.0f, 0.0f)));
 }
 
 int main() {

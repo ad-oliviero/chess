@@ -25,7 +25,7 @@ void Board::setupTeam(bool color) {
 		piece.setTeam(color);
 
 		pieceSecondRow.setTeam(color);
-		// pieceSecondRow.setType(PAWN);
+		pieceSecondRow.setType(PAWN);
 	}
 
 	for (int i = 0; i < 8; i += 7) {

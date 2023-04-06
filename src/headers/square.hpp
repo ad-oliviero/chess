@@ -13,14 +13,13 @@ public:
 	void setColor(sf::Color);
 	void setSize(float);
 	void setPosition(unsigned int, unsigned int);
-	void setPiece(Piece);
 	void setPossible();
 	void setNotPossible();
 	void empty();
 	void draw(sf::RenderWindow&) const;
-	float getSize() { return shape.getSize().x; }
+	float getSize() const { return shape.getSize().x; }
 	sf::RectangleShape& getShape() { return shape; }
-	const Vector2u& getPosition() const { return position; }
+	const Vector2<unsigned int>& getPosition() const { return position; }
 	Piece getPiece() const { return piece; }
 	Piece& getPieceHandle() { return piece; }
 	Square* select();
@@ -30,7 +29,7 @@ private:
 	sf::RectangleShape shape;
 	sf::RectangleShape selectShape;
 	sf::CircleShape possibleShape;
-	Vector2u position;
+	Vector2<unsigned int> position;
 	Piece piece;
 };
 

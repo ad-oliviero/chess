@@ -21,18 +21,13 @@ void Square::setSize(float size) {
 }
 
 void Square::setPosition(unsigned int x, unsigned int y) {
-	position	 = Vector2u(x, y);
+	position	 = Vector2<unsigned int>(x, y);
 	float size = shape.getSize().x;
 	float nx	 = x * size;
 	float ny	 = y * size;
 	shape.setPosition(sf::Vector2f(nx, ny));
 	selectShape.setPosition(sf::Vector2f(nx, ny));
 	possibleShape.setPosition(sf::Vector2f(nx + (size / 5), ny + (size / 5)));
-}
-
-void Square::setPiece(Piece piece) {
-	this->piece.setTeam(piece.getTeam());
-	this->piece.setType(piece.getType());
 }
 
 void Square::setPossible() {
@@ -44,7 +39,7 @@ void Square::setNotPossible() {
 }
 
 void Square::empty() {
-	piece = Piece(NONE, 0);
+	piece.setType(NONE);
 }
 
 void Square::draw(sf::RenderWindow& window) const {

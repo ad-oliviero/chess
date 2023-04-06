@@ -4,6 +4,7 @@
 #include "board.hpp"
 #include "piece.hpp"
 #include <SFML/Graphics.hpp>
+#include <vector>
 
 class Game {
 public:
@@ -15,11 +16,13 @@ public:
 	void allLegalMoves(Square&);
 	void resetPossibilities();
 	void move(Square&, Square&);
+	void eat(const Square&);
 
 private:
 	sf::RenderWindow window;
 	Board board;
 	Square* selected;
+	std::vector<Piece> eaten;
 };
 
 #endif
