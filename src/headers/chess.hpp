@@ -10,20 +10,16 @@ public:
 	Game();
 	~Game();
 	void loop();
-	void setupPieces();
-	void setupTeam(Piece[16], bool);
 	void enventHandler();
-	void place(Piece&, unsigned int);
-	bool checkMove(Piece&, Square);
-	void movePiece(Piece&, Location);
-	Piece& getPieceHandle(Location);
+	bool checkMove(Square&, Square);
+	void allLegalMoves(Square&);
+	void resetPossibilities();
+	void move(Square&, Square&);
 
 private:
 	sf::RenderWindow window;
 	Board board;
 	Square* selected;
-	Piece blacks[16];
-	Piece whites[16];
 };
 
 #endif
