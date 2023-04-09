@@ -5,10 +5,9 @@
 
 class Board {
 public:
-	Board() : Board(100) {}
-	Board(float);
-	~Board(){};
-	void setupTeam(bool);
+	Board(float, sf::Texture* [6]);
+	~Board() {}
+	void setupTeam(bool, sf::Texture* [6]);
 	void draw(sf::RenderWindow&) const;
 	const Square& getSquare(unsigned int x, unsigned int y) const { return squares[x][y]; }
 	Square& getSquareHandle(unsigned int x, unsigned int y) { return squares[x][y]; }

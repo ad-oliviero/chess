@@ -20,7 +20,8 @@ public:
 
 private:
 	sf::RenderWindow window;
-	Board board;
+	sf::Texture* textures[6];
+	Board* board;
 	Square* selected;
 	std::vector<Piece> eaten;
 };

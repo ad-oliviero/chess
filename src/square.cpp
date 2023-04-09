@@ -1,5 +1,4 @@
 #include "headers/square.hpp"
-#include "headers/common.hpp"
 
 Square::Square(float size, float x, float y, sf::Color color) {
 	shape.setSize(sf::Vector2f(size, size));
@@ -28,6 +27,7 @@ void Square::setPosition(unsigned int x, unsigned int y) {
 	shape.setPosition(sf::Vector2f(nx, ny));
 	selectShape.setPosition(sf::Vector2f(nx, ny));
 	possibleShape.setPosition(sf::Vector2f(nx + (size / 5), ny + (size / 5)));
+	piece.setPosition(x, y, size);
 }
 
 void Square::setPossible() {
@@ -39,7 +39,7 @@ void Square::setNotPossible() {
 }
 
 void Square::empty() {
-	piece.setType(NONE);
+	piece.setType(Piece::NONE);
 }
 
 void Square::draw(sf::RenderWindow& window) const {

@@ -1,11 +1,11 @@
 #include "headers/piece.hpp"
-#include "headers/common.hpp"
-#include "headers/images.hpp"
+// #include "headers/images.hpp"
 #include "headers/vector2.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 
 Piece::Piece(unsigned int type, bool team) {
+	texture = NULL;
 	setTeam(team);
 	setType(type);
 	sprite.setScale(0.2, 0.2);
@@ -16,8 +16,6 @@ Piece::Piece(const Piece& piece, Vector2<float> eatenSpace) {
 	setType(piece.type);
 	setTeam(piece.team);
 	sprite.setScale(0.2, 0.2);
-	texture.loadFromMemory(images_data[this->type], images_data_len[this->type]);
-	sprite.setTexture(texture);
 	setPosition(eatenSpace);
 }
 
@@ -42,14 +40,18 @@ void Piece::setTeam(bool team) {
 	sprite.setColor(this->team == Piece::White ? sf::Color::White : sf::Color(95, 95, 95, 255));
 }
 
+void Piece::setType(unsigned int type, sf::Texture* texture) {
+	this->texture = texture;
+	setType(type);
+}
+
 void Piece::setType(unsigned int type) {
 	this->type = type;
 	if (this->type == NONE) {
 		sprite.setColor(sf::Color(0, 0, 0, 0));
 		return;
 	}
-	texture.loadFromMemory(images_data[this->type], images_data_len[this->type]);
-	sprite.setTexture(texture);
+	if (texture) sprite.setTexture(*texture);
 }
 
 Piece& Piece::operator=(const Piece& other) {
