@@ -20,8 +20,9 @@ public:
 	void setType(unsigned int);
 	void setEaten(Vector2<float>);
 	Piece& operator=(const Piece&);
-	unsigned int getType() { return type; }
-	bool getTeam() { return team; }
+	unsigned int getType() const { return type; }
+	bool getTeam() const { return team; }
+	sf::Texture* getTexture() const { return texture; }
 
 	enum TEAM {
 		White,

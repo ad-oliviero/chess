@@ -20,7 +20,7 @@ public:
 	float getSize() const { return shape.getSize().x; }
 	sf::RectangleShape& getShape() { return shape; }
 	const Vector2<unsigned int>& getPosition() const { return position; }
-	Piece getPiece() const { return piece; }
+	const Piece& getPiece() const { return piece; }
 	Piece& getPieceHandle() { return piece; }
 	Square* select();
 	void deselect();

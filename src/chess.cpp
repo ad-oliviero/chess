@@ -60,10 +60,6 @@ void Game::enventHandler() {
 }
 
 void Game::loop() {
-	// Piece piec;
-	// sf::Texture* txt = new sf::Texture;
-	// txt->loadFromMemory(images_data[0], images_data_len[0]);
-	// piec.sprite.setTexture(*txt);
 	while (window.isOpen()) {
 		enventHandler();
 		window.clear(sf::Color::Black);
@@ -117,7 +113,7 @@ bool Game::checkMove(Square& square, Square target) {
 void Game::move(Square& square, Square& target) {
 	if (target.getPiece().getType() != Piece::NONE) eat(target);
 	target.getPieceHandle().setTeam(square.getPiece().getTeam());
-	target.getPieceHandle().setType(square.getPiece().getType());
+	target.getPieceHandle().setType(square.getPiece().getType(), square.getPiece().getTexture());
 	square.empty();
 }
 

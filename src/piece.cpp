@@ -1,5 +1,4 @@
 #include "headers/piece.hpp"
-// #include "headers/images.hpp"
 #include "headers/vector2.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Sprite.hpp>
@@ -13,8 +12,8 @@ Piece::Piece(unsigned int type, bool team) {
 }
 
 Piece::Piece(const Piece& piece, Vector2<float> eatenSpace) {
-	setType(piece.type);
 	setTeam(piece.team);
+	setType(piece.type, piece.getTexture());
 	sprite.setScale(0.2, 0.2);
 	setPosition(eatenSpace);
 }
