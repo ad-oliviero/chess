@@ -3,8 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 
-Piece::Piece(unsigned int type, bool team) {
-	texture = NULL;
+Piece::Piece(unsigned int type, bool team) : texture(NULL) {
 	setTeam(team);
 	setType(type);
 	sprite.setScale(0.2, 0.2);

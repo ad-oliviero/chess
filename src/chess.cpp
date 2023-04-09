@@ -1,11 +1,12 @@
 #include "headers/chess.hpp"
 #include "headers/board.hpp"
-#include "headers/images.hpp"
 #include "headers/piece.hpp"
+#include "headers/res_generated.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <string>
 
-Game::Game() {
+Game::Game() : selected(NULL) {
 	for (int i = 0; i < 6; i++) {
 		textures[i] = new sf::Texture();
 		textures[i]->loadFromMemory(images_data[i], images_data_len[i]);
@@ -13,7 +14,7 @@ Game::Game() {
 	board = new Board(100, textures);
 	window.create(sf::VideoMode(1000, 800), "chess");
 	window.setVerticalSyncEnabled(true);
-	selected = NULL;
+	font.loadFromMemory(font_ttf, font_ttf_len);
 }
 
 Game::~Game() {
@@ -64,7 +65,10 @@ void Game::loop() {
 		enventHandler();
 		window.clear(sf::Color::Black);
 		board->draw(window);
-		for (auto& e : eaten) e.draw(window);
+		for (auto& e : eaten) {
+			e.x.draw(window);
+			window.draw(e.z);
+		}
 		window.display();
 	}
 }
@@ -78,11 +82,9 @@ void Game::allLegalMoves(Square& square) {
 }
 
 void Game::resetPossibilities() {
-	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; j++) {
+	for (int i = 0; i < 8; i++)
+		for (int j = 0; j < 8; j++)
 			board->getSquareHandle(i, j).setNotPossible();
-		}
-	}
 }
 
 bool Game::checkMove(Square& square, Square target) {
@@ -118,7 +120,19 @@ void Game::move(Square& square, Square& target) {
 }
 
 void Game::eat(const Square& square) {
-	eaten.push_back(Piece(square.getPiece(), Vector2(square.getSize() * 8.0f, 0.0f)));
+	Vector2 position(square.getSize() * (7.0f + ((1.0f * square.getPiece().getTeam()) + 1.0f)), 0.0f);
+	sf::Text label("", font, 24);
+	for (auto& e : eaten) {
+		if (e.x.getTeam() == square.getPiece().getTeam()) {
+			if (e.x.getType() == square.getPiece().getType()) {
+				e.z.setString("x" + std::to_string(++e.y));
+				return;
+			}
+			if (e.x.getType() != square.getPiece().getType()) position.y += square.getSize();
+		}
+	}
+	label.setPosition(position.x + (square.getSize() * 0.65), position.y + (square.getSize() * 0.75));
+	eaten.push_back(Vector3<Piece, unsigned int, sf::Text>(Piece(square.getPiece(), position), 1, label));
 }
 
 int main() {

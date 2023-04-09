@@ -3,14 +3,14 @@
 
 #include <string>
 
-template <typename T>
+template <typename xType, typename yType = xType>
 class Vector2 {
 public:
-	T x;
-	T y;
+	xType x;
+	yType y;
 
 	Vector2() : Vector2(0, 0) {}
-	Vector2(T x, T y) : x(x), y(y) {}
+	Vector2(xType x, yType y) : x(x), y(y) {}
 	~Vector2() {}
 	std::string to_string();
 	bool operator==(const Vector2& other) const { return (x == other.x) && (y == other.y); }

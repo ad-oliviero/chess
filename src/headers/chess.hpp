@@ -3,6 +3,7 @@
 
 #include "board.hpp"
 #include "piece.hpp"
+#include "vector3.hpp"
 #include <SFML/Graphics.hpp>
 #include <vector>
 
@@ -23,7 +24,8 @@ private:
 	sf::Texture* textures[6];
 	Board* board;
 	Square* selected;
-	std::vector<Piece> eaten;
+	sf::Font font;
+	std::vector<Vector3<Piece, unsigned int, sf::Text>> eaten;
 };
 
 #endif
