@@ -5,6 +5,12 @@
 #include <SFML/Graphics.hpp>
 
 class Piece {
+private:
+	sf::Sprite sprite;
+	sf::Texture* texture;
+	unsigned int type;
+	bool team;
+
 public:
 	void setTexture(sf::Texture* txt) { sprite.setTexture(*txt); }
 	Piece() : Piece(NONE, White) {}
@@ -38,12 +44,6 @@ public:
 		QUEEN,
 		NONE = 9
 	};
-
-private:
-	sf::Sprite sprite;
-	sf::Texture* texture;
-	unsigned int type;
-	bool team;
 };
 
 #endif // _PIECE_HPP_

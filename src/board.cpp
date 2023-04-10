@@ -23,8 +23,8 @@ void Board::setupTeam(bool color, sf::Texture* textures[6]) {
 		auto& pieceSecondRow = squares[i][1 + (5 * color)].getPieceHandle();
 		piece.setTeam(color);
 
-		pieceSecondRow.setTeam(color);
-		pieceSecondRow.setType(Piece::PAWN, textures[Piece::PAWN]);
+		// pieceSecondRow.setTeam(color);
+		// pieceSecondRow.setType(Piece::PAWN, textures[Piece::PAWN]);
 	}
 
 	for (int i = 0; i < 8; i += 7) {

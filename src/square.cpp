@@ -8,6 +8,7 @@ Square::Square(float size, float x, float y, sf::Color color) {
 	selectShape.setFillColor(sf::Color(0, 0, 0, 0));
 
 	possibleShape.setRadius(size / 3);
+	possibleShape.setFillColor(sf::Color(100, 150, 100, 75));
 	setNotPossible();
 }
 
@@ -31,11 +32,11 @@ void Square::setPosition(unsigned int x, unsigned int y) {
 }
 
 void Square::setPossible() {
-	possibleShape.setFillColor(sf::Color(100, 150, 100, 75));
+	possible = true;
 }
 
 void Square::setNotPossible() {
-	possibleShape.setFillColor(sf::Color(0, 0, 0, 0));
+	possible = false;
 }
 
 void Square::empty() {
@@ -44,7 +45,7 @@ void Square::empty() {
 
 void Square::draw(sf::RenderWindow& window) const {
 	window.draw(shape);
-	window.draw(possibleShape);
+	if (possible) window.draw(possibleShape);
 	window.draw(selectShape);
 	piece.draw(window);
 }

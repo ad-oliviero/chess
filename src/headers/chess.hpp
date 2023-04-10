@@ -8,17 +8,6 @@
 #include <vector>
 
 class Game {
-public:
-	Game();
-	~Game();
-	void loop();
-	void enventHandler();
-	bool checkMove(Square&, Square);
-	void allLegalMoves(Square&);
-	void resetPossibilities();
-	void move(Square&, Square&);
-	void eat(const Square&);
-
 private:
 	sf::RenderWindow window;
 	sf::Texture* textures[6];
@@ -26,6 +15,19 @@ private:
 	Square* selected;
 	sf::Font font;
 	std::vector<Vector3<Piece, unsigned int, sf::Text>> eaten;
+
+public:
+	Game();
+	~Game();
+	void loop();
+	void enventHandler();
+	bool checkMove(Square&, Square);
+	void checkStraightMoves(Square&);
+	void checkDiagonalMoves(Square&);
+	void allLegalMoves(Square&);
+	void resetPossibilities();
+	void move(Square&, Square&);
+	void eat(const Square&);
 };
 
 #endif

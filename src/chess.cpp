@@ -36,11 +36,9 @@ void Game::enventHandler() {
 					if (square.getShape().getGlobalBounds().contains(cursorPosition)) {
 						if (selected) {
 							selected->deselect();
+							// if (square.isPossible()) move(*selected, square);
+							if (checkMove(*selected, square)) move(*selected, square);
 							resetPossibilities();
-							if (checkMove(*selected, square)) {
-								move(*selected, square);
-								std::cout << "MOVED from " << selected->getPosition() << " to " << square.getPosition() << std::endl;
-							}
 							selected = NULL;
 						} else {
 							selected = square.select();
@@ -54,9 +52,7 @@ void Game::enventHandler() {
 					}
 				}
 			}
-			// std::cout << board << std::endl;
 		}
-		// else if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left)
 	}
 }
 
@@ -73,12 +69,58 @@ void Game::loop() {
 	}
 }
 
+void Game::checkStraightMoves(Square& square) {
+	Vector2 position = square.getPosition();
+	for (int i = position.x + 1; i < 8; i++) {
+		Square& target = board->getSquareHandle(i, position.y);
+		if (checkMove(square, target)) target.setPossible();
+		if (!target.isEmpty()) break;
+	}
+	for (int i = position.x - 1; i >= 0; i--) {
+		Square& target = board->getSquareHandle(i, position.y);
+		if (checkMove(square, target)) target.setPossible();
+		if (!target.isEmpty()) break;
+	}
+	for (int i = position.y + 1; i < 8; i++) {
+		Square& target = board->getSquareHandle(position.x, i);
+		if (checkMove(square, target)) target.setPossible();
+		if (!target.isEmpty()) break;
+	}
+	for (int i = position.y - 1; i >= 0; i--) {
+		Square& target = board->getSquareHandle(position.x, i);
+		if (checkMove(square, target)) target.setPossible();
+		if (!target.isEmpty()) break;
+	}
+}
+
+void Game::checkDiagonalMoves(Square& square) {
+	Vector2 position = square.getPosition();
+	for (int i = 1; position.x + i < 8 && position.y + i < 8; i++) {
+		Square& target = board->getSquareHandle(position.x + i, position.y + i);
+		if (checkMove(square, target)) target.setPossible();
+		if (!target.isEmpty()) break;
+	}
+	for (int i = 1; position.x + i < 8 && position.y - i < 8; i++) {
+		Square& target = board->getSquareHandle(position.x + i, position.y - i);
+		if (checkMove(square, target)) target.setPossible();
+		if (!target.isEmpty()) break;
+	}
+	for (int i = 1; position.x - i < 8 && position.y + i < 8; i++) {
+		Square& target = board->getSquareHandle(position.x - i, position.y + i);
+		if (checkMove(square, target)) target.setPossible();
+		if (!target.isEmpty()) break;
+	}
+	for (int i = 1; position.x - i < 8 && position.y - i < 8; i++) {
+		Square& target = board->getSquareHandle(position.x - i, position.y - i);
+		if (checkMove(square, target)) target.setPossible();
+		if (!target.isEmpty()) break;
+	}
+}
+
 void Game::allLegalMoves(Square& square) {
-	for (int i = 0; i < 8; i++)
-		for (int j = 0; j < 8; j++) {
-			Square& target = board->getSquareHandle(i, j);
-			if (checkMove(square, target)) target.setPossible();
-		}
+	unsigned int type = square.getPiece().getType();
+	if (type == Piece::TOWER || type == Piece::QUEEN) checkStraightMoves(square);
+	if (type == Piece::BISHOP || type == Piece::QUEEN) checkDiagonalMoves(square);
 }
 
 void Game::resetPossibilities() {
@@ -88,7 +130,6 @@ void Game::resetPossibilities() {
 }
 
 bool Game::checkMove(Square& square, Square target) {
-	if (square.getPiece().getTeam() == Piece::NONE) return false;
 	Vector2<unsigned int> diff = square.getPosition() - target.getPosition();
 	if (diff == 0) return false;
 	Piece& piece = square.getPieceHandle();

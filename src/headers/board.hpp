@@ -4,6 +4,9 @@
 #include <SFML/Graphics.hpp>
 
 class Board {
+private:
+	Square squares[8][8];
+
 public:
 	Board(float, sf::Texture* [6]);
 	~Board() {}
@@ -12,9 +15,6 @@ public:
 	const Square& getSquare(unsigned int x, unsigned int y) const { return squares[x][y]; }
 	Square& getSquareHandle(unsigned int x, unsigned int y) { return squares[x][y]; }
 	friend std::ostream& operator<<(std::ostream& os, const Board& b);
-
-private:
-	Square squares[8][8];
 };
 
 #endif // _BOARD_HPP_
