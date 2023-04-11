@@ -13,6 +13,7 @@ private:
 	Vector2<unsigned int> position;
 	Piece piece;
 	bool possible;
+	bool selected;
 
 public:
 	Square() : Square(100, 0, 0, sf::Color(200, 200, 200, 255)) {}

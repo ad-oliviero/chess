@@ -36,8 +36,7 @@ void Game::enventHandler() {
 					if (square.getShape().getGlobalBounds().contains(cursorPosition)) {
 						if (selected) {
 							selected->deselect();
-							// if (square.isPossible()) move(*selected, square);
-							if (checkMove(*selected, square)) move(*selected, square);
+							if (square.isPossible()) move(*selected, square);
 							resetPossibilities();
 							selected = NULL;
 						} else {
@@ -119,8 +118,33 @@ void Game::checkDiagonalMoves(Square& square) {
 
 void Game::allLegalMoves(Square& square) {
 	unsigned int type = square.getPiece().getType();
-	if (type == Piece::TOWER || type == Piece::QUEEN) checkStraightMoves(square);
-	if (type == Piece::BISHOP || type == Piece::QUEEN) checkDiagonalMoves(square);
+	if (type == Piece::TOWER || type == Piece::QUEEN || type == Piece::KING) checkStraightMoves(square);
+	if (type == Piece::BISHOP || type == Piece::QUEEN || type == Piece::KING) checkDiagonalMoves(square);
+	Vector2 position = square.getPosition();
+	if (type == Piece::HORSE) {
+		for (int i = 0; i < 8; i++)
+			for (int j = 0; j < 8; j++) {
+				Square& target = board->getSquareHandle(i, j);
+				if (checkMove(square, target)) target.setPossible();
+			}
+	}
+	if (type == Piece::PAWN) {
+		for (int i = -1; i <= 1; i += 2) {
+			unsigned int yToggle = (-2 * square.getPiece().getTeam()) + 1;
+			if (position.x + i < 8 && position.y + yToggle < 8) {
+				Square& target = board->getSquareHandle(position.x + i, position.y + yToggle);
+				if (!target.isEmpty() && target.getPiece().getTeam() != square.getPiece().getTeam()) target.setPossible();
+			}
+		}
+		if (position.y - 1 < 8) {
+			Square& target = board->getSquareHandle(position.x, position.y - 1);
+			if (checkMove(square, target)) target.setPossible();
+		}
+		if (position.y + 1 < 8) {
+			Square& target = board->getSquareHandle(position.x, position.y + 1);
+			if (checkMove(square, target)) target.setPossible();
+		}
+	}
 }
 
 void Game::resetPossibilities() {
@@ -136,9 +160,10 @@ bool Game::checkMove(Square& square, Square target) {
 	if ((target.getPiece().getType() != Piece::NONE) && (piece.getTeam() == target.getPiece().getTeam())) return false;
 	if (piece.getType() == Piece::PAWN) {
 		if (piece.getTeam() == Piece::White) diff = Vector2<unsigned int>(0, 0) - diff;
-		if (diff.x == 0 && diff.y <= 1 &&
-				(piece.getTeam() == Piece::White ? square.getPosition().y < target.getPosition().y
-																				 : square.getPosition().y > target.getPosition().y)) return true;
+		if (diff.x <= 1 && diff.y <= 1 && target.isEmpty() &&
+				(piece.getTeam() == Piece::White
+						 ? square.getPosition().y < target.getPosition().y
+						 : square.getPosition().y > target.getPosition().y)) return true;
 	} else if (piece.getType() == Piece::TOWER) {
 		if (diff.x == 0 || diff.y == 0) return true;
 	} else if (piece.getType() == Piece::HORSE) {
