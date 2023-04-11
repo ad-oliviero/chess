@@ -8,7 +8,8 @@ prefix/
 CMakeLists.txt.user
 CMakeUserPresets.json
 *.png
-images.hpp
+res_generated.hpp
+*.ttf
 # Prerequisites
 *.d
 

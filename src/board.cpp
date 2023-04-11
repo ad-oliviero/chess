@@ -1,23 +1,22 @@
 #include "headers/board.hpp"
-#include "headers/common.hpp"
 #include "headers/vector2.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-Board::Board(float squaresz) {
+Board::Board(float squaresz, sf::Texture* textures[6]) {
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			squares[i][j].setSize(squaresz);
 			squares[i][j].setColor(((i + j) % 2 == 0) ? sf::Color(200, 200, 200, 255) : sf::Color(50, 50, 50, 255));
 			squares[i][j].setPosition(i, j);
-			squares[i][j].getPieceHandle().setPosition(i, j, squaresz);
 		}
 	}
-	setupTeam(Piece::White);
-	setupTeam(Piece::Black);
+
+	setupTeam(Piece::White, textures);
+	setupTeam(Piece::Black, textures);
 }
 
-void Board::setupTeam(bool color) {
+void Board::setupTeam(bool color, sf::Texture* textures[6]) {
 	float sqsize = squares[0][0].getSize();
 	for (unsigned int i = 0; i < 8; i++) {
 		auto& piece					 = squares[i][7 * color].getPieceHandle();
@@ -25,7 +24,7 @@ void Board::setupTeam(bool color) {
 		piece.setTeam(color);
 
 		pieceSecondRow.setTeam(color);
-		// pieceSecondRow.setType(PAWN);
+		pieceSecondRow.setType(Piece::PAWN, textures[Piece::PAWN]);
 	}
 
 	for (int i = 0; i < 8; i += 7) {
@@ -36,11 +35,12 @@ void Board::setupTeam(bool color) {
 		 * and the y (we access only 0, 1, 6 and 7).
 		 */
 		for (int j = 0; j < 3; j++) {
-			squares[j][i].getPieceHandle().setType(TOWER + j);
-			squares[7 - j][i].getPieceHandle().setType(TOWER + j);
+			auto type = Piece::TOWER + j;
+			squares[j][i].getPieceHandle().setType(type, textures[type]);
+			squares[7 - j][i].getPieceHandle().setType(type, textures[type]);
 		}
-		squares[3][i].getPieceHandle().setType(QUEEN);
-		squares[4][i].getPieceHandle().setType(KING);
+		squares[3][i].getPieceHandle().setType(Piece::QUEEN, textures[Piece::QUEEN]);
+		squares[4][i].getPieceHandle().setType(Piece::KING, textures[Piece::KING]);
 	}
 }
 

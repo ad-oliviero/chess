@@ -3,21 +3,22 @@
 
 #include <string>
 
-class Vector2u {
+template <typename xType, typename yType = xType>
+class Vector2 {
 public:
-	unsigned int x;
-	unsigned int y;
+	xType x;
+	yType y;
 
-	Vector2u() : Vector2u(0, 0) {}
-	Vector2u(unsigned int x, unsigned int y) : x(x), y(y) {}
-	~Vector2u() {}
+	Vector2() : Vector2(0, 0) {}
+	Vector2(xType x, yType y) : x(x), y(y) {}
+	~Vector2() {}
 	std::string to_string();
-	bool operator==(const Vector2u& other) const { return (x == other.x) && (y == other.y); }
+	bool operator==(const Vector2& other) const { return (x == other.x) && (y == other.y); }
 	bool operator==(const int& other) const { return (x == other) && (y == other); }
-	bool operator!=(const Vector2u& other) const { return !(*this == other); }
-	Vector2u operator+(const Vector2u& other) const { return Vector2u(x + other.x, y + other.y); }
-	Vector2u operator-(const Vector2u& other) const { return Vector2u(std::abs(int(x - other.x)), std::abs(int(y - other.y))); }
-	friend std::ostream& operator<<(std::ostream&, const Vector2u&);
+	bool operator!=(const Vector2& other) const { return !(*this == other); }
+	Vector2 operator+(const Vector2& other) const { return Vector2(x + other.x, y + other.y); }
+	Vector2 operator-(const Vector2& other) const { return Vector2(std::abs(int(x - other.x)), std::abs(int(y - other.y))); }
+	friend std::ostream& operator<<(std::ostream&, const Vector2<unsigned int>&);
 };
 
 #endif // _VECTOR2_HPP_

@@ -21,7 +21,7 @@ project(
     LANGUAGES CXX
 )
 
-add_executable(chess src/board.cpp src/piece.cpp src/square.cpp src/vector2.cpp src/chess.cpp)
+add_executable(chess src/board.cpp src/piece.cpp src/square.cpp src/vector2.cpp src/vector3.cpp src/chess.cpp)
 
 target_link_libraries(chess PRIVATE sfml-graphics sfml-window sfml-system)
 
