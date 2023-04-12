@@ -1,4 +1,4 @@
-#include "headers/chess.hpp"
+#include "headers/game.hpp"
 #include "headers/board.hpp"
 #include "headers/piece.hpp"
 #include "headers/res_generated.hpp"
@@ -199,10 +199,4 @@ void Game::eat(const Square& square) {
 	}
 	label.setPosition(position.x + (square.getSize() * 0.65), position.y + (square.getSize() * 0.75));
 	eaten.push_back(Vector3<Piece, unsigned int, sf::Text>(Piece(square.getPiece(), position), 1, label));
-}
-
-int main() {
-	Game game;
-	game.loop();
-	return 0;
 }
