@@ -1,6 +1,7 @@
 .idea/
 .vs/
 .vscode/
+.nvim-session
 build/
 cmake/open-cpp-coverage.cmake
 cmake-build-*/
