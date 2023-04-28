@@ -19,11 +19,13 @@ public:
 	void setLoop(void (*)(Socket<T>&));
 	void startLoop();
 	void stopLoop();
-	void loopCallback();
+	void loop();
 	void closeExt();
 	void closeSock();
 	void close();
 	void accept();
+
+	bool isRunning() const { return running; }
 
 	enum connType { Client = false,
 									Server = true };

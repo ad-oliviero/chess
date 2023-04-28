@@ -60,6 +60,8 @@ void Socket<T>::close() {
 template <typename T>
 void Socket<T>::accept() {
 	extSock = ::accept(sock, reinterpret_cast<sockaddr*>(&extAddr), &addrLen);
+	if (extSock == -1)
+		throw "Failed to accept incoming connection";
 }
 
 template <typename T>
@@ -87,7 +89,9 @@ void Socket<T>::setLoop(void (*loopCallbackPtr)(Socket<T>&)) {
 template <typename T>
 void Socket<T>::startLoop() {
 	running = true;
-	thread	= new std::thread(&Socket<T>::loopCallback, this);
+	if (type == Socket::Server)
+		accept();
+	thread = new std::thread(&Socket<T>::loop, this);
 }
 
 template <typename T>
@@ -99,8 +103,7 @@ void Socket<T>::stopLoop() {
 }
 
 template <typename T>
-void Socket<T>::loopCallback() {
+void Socket<T>::loop() {
 	if (loopCallbackPtr)
-		while (running)
-			loopCallbackPtr(*this);
+		loopCallbackPtr(*this);
 }

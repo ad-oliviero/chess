@@ -9,20 +9,19 @@
 #include <unistd.h>
 
 template <typename T>
-void serverLoop(Socket<T>& server) {
-	// while (true) {
-	// if (server.extSock == -1)
-	// std::cerr << "Failed to accept incoming connection" << std::endl;
-	// std::cout << "Client: " << server.receive() << std::endl;
-	// server.send("Yes, it does!");
-	// server.closeExt();
-	// }
+void serverCallback(Socket<T>& server) {
+	while (server.isRunning()) {
+		std::cout << "Client: " << server.receive() << std::endl;
+		server.send("Yes, it does!");
+	}
 }
 
 template <typename T>
-void clientLoop(Socket<T>& client) {
-	// client.send("Does this work?");
-	// std::cout << "Server: " << client.receive() << std::endl;
+void clientCallback(Socket<T>& client) {
+	while (client.isRunning()) {
+		client.send("Does this work?");
+		std::cout << "Server: " << client.receive() << std::endl;
+	}
 }
 
 Game::Game(bool isHost) : selected(NULL), serverSocket(NULL), clientSocket(NULL) {
@@ -37,11 +36,11 @@ Game::Game(bool isHost) : selected(NULL), serverSocket(NULL), clientSocket(NULL)
 	if (isHost) {
 		serverSocket = new Socket<std::string>("127.0.0.1", 5555, Socket<std::string>::Server);
 		std::cout << "Server started!" << std::endl;
-		serverSocket->setLoop(&serverLoop<std::string>);
+		serverSocket->setLoop(&serverCallback<std::string>);
 	} else {
 		clientSocket = new Socket<std::string>("127.0.0.1", 5555, Socket<std::string>::Client);
 		std::cout << "Client started!" << std::endl;
-		clientSocket->setLoop(&clientLoop<std::string>);
+		clientSocket->setLoop(&clientCallback<std::string>);
 	}
 }
 
