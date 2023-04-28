@@ -1,12 +1,31 @@
 #include "headers/game.hpp"
 #include "headers/board.hpp"
+#include "headers/connection.hpp"
 #include "headers/piece.hpp"
 #include "headers/res_generated.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <string>
+#include <unistd.h>
 
-Game::Game() : selected(NULL) {
+template <typename T>
+void serverLoop(Socket<T>& server) {
+	// while (true) {
+	// if (server.extSock == -1)
+	// std::cerr << "Failed to accept incoming connection" << std::endl;
+	// std::cout << "Client: " << server.receive() << std::endl;
+	// server.send("Yes, it does!");
+	// server.closeExt();
+	// }
+}
+
+template <typename T>
+void clientLoop(Socket<T>& client) {
+	// client.send("Does this work?");
+	// std::cout << "Server: " << client.receive() << std::endl;
+}
+
+Game::Game(bool isHost) : selected(NULL), serverSocket(NULL), clientSocket(NULL) {
 	for (int i = 0; i < 6; i++) {
 		textures[i] = new sf::Texture();
 		textures[i]->loadFromMemory(images_data[i], images_data_len[i]);
@@ -15,9 +34,22 @@ Game::Game() : selected(NULL) {
 	window.create(sf::VideoMode(1000, 800), "chess");
 	window.setVerticalSyncEnabled(true);
 	font.loadFromMemory(font_ttf, font_ttf_len);
+	if (isHost) {
+		serverSocket = new Socket<std::string>("127.0.0.1", 5555, Socket<std::string>::Server);
+		std::cout << "Server started!" << std::endl;
+		serverSocket->setLoop(&serverLoop<std::string>);
+	} else {
+		clientSocket = new Socket<std::string>("127.0.0.1", 5555, Socket<std::string>::Client);
+		std::cout << "Client started!" << std::endl;
+		clientSocket->setLoop(&clientLoop<std::string>);
+	}
 }
 
 Game::~Game() {
+	if (serverSocket)
+		delete serverSocket;
+	if (clientSocket)
+		delete clientSocket;
 	window.close();
 	for (auto& t : textures)
 		delete t;
@@ -55,7 +87,9 @@ void Game::enventHandler() {
 	}
 }
 
-void Game::loop() {
+void Game::gameLoop() {
+	if (serverSocket) serverSocket->startLoop();
+	if (clientSocket) clientSocket->startLoop();
 	while (window.isOpen()) {
 		enventHandler();
 		window.clear(sf::Color::Black);

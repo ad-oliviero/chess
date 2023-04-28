@@ -2,6 +2,7 @@
 #define _GAME_HPP_
 
 #include "board.hpp"
+#include "connection.hpp"
 #include "piece.hpp"
 #include "vector3.hpp"
 #include <SFML/Graphics.hpp>
@@ -15,11 +16,9 @@ private:
 	Square* selected;
 	sf::Font font;
 	std::vector<Vector3<Piece, unsigned int, sf::Text>> eaten;
+	Socket<std::string>* serverSocket;
+	Socket<std::string>* clientSocket;
 
-public:
-	Game();
-	~Game();
-	void loop();
 	void enventHandler();
 	bool checkMove(Square&, Square);
 	void checkStraightMoves(Square&);
@@ -28,6 +27,11 @@ public:
 	void resetPossibilities();
 	void move(Square&, Square&);
 	void eat(const Square&);
+
+public:
+	Game(bool);
+	~Game();
+	void gameLoop();
 };
 
 #endif
